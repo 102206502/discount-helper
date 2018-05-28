@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import datetime
 import requests
 from requests_html import HTML
 import pandas as pd
@@ -12,12 +13,13 @@ class PttBoardCrawleer(object):
     """docstring for PttBoardCrawleer"""
     def __init__(self):
         self.domain = 'https://www.ptt.cc/'
+        self.key_words = ['折扣', '打折', '優惠', '特賣', '特價', '降價', '免運']
+        self.month_period = 3 # 間隔?個月
 
     def crawl_discount_info(self, board_name):
         
         start_url = 'https://www.ptt.cc/bbs/' + board_name + '/index.html'
-        key_words = ['折扣', '打折', '優惠', '降價', '免運']
-        num_pages = 5
+        num_pages = 300
 
         collected_meta = self.get_paged_meta(start_url, num_pages)
         article_df = pd.DataFrame(collected_meta)
@@ -56,23 +58,53 @@ class PttBoardCrawleer(object):
                     meta['author'] = match_author.group(1)
         return meta
 
-        # 最終仍回傳統一的 dict() 形式 paired data
-        return meta
-
     def get_metadata_from(self, url):
 
         def parse_next_link(doc):
             html = HTML(html=doc)
-            print('html type:', type(html))
+            # print('html type:', type(html))
             controls = html.find('.action-bar a.btn.wide')
             link = controls[1].attrs.get('href')
             return urllib.parse.urljoin(self.domain, link)
 
+        def check_month(date_str):
+            now_time = datetime.datetime.now()
+            print('today:', now_time.month)
+            date_arr = date_str.split('/')
+            post_month = int(date_arr[0])
+            print(date_str)
+            too_old = False
+            if now_time.month >= post_month:
+                too_old = now_time.month - post_month >= self.month_period
+            else:
+                too_old = now_time.month + 12 - now_time.month >= self.month_period
+            print('too old?', too_old)
+            if too_old:
+                return True
+            else:
+                return False
+
         resp = self.fetch(url)
         post_entries = self.parse_article_entries(resp.text)
         next_link = parse_next_link(resp.text)
-
-        metadata = [self.parse_article_meta(entry) for entry in post_entries]
+        metadata = []
+        old_counter = 0
+        for entry in post_entries:
+            meta = self.parse_article_meta(entry)
+            # print(meta)
+            for key_word in self.key_words:
+                match = re.search(key_word, meta['title'])
+                if match :
+                    print(meta['title'])
+                    print('折扣通知!')
+                    metadata.append(meta)
+            if check_month(meta['date']):
+                old_counter+=1
+            if old_counter >= 10:
+                next_link = None
+                print('stop crawling becausse information too old.')
+                break
+                
         return metadata, next_link
 
     def parse_article_entries(self, doc):
@@ -80,14 +112,17 @@ class PttBoardCrawleer(object):
         post_entries = html.find('div.r-ent')
         return post_entries
 
-    def get_paged_meta(self, url, num_pages):
+    def get_paged_meta(self, url, max_pages):
+
         collected_meta = []
 
-        for page in range(num_pages):
+        for page in range(max_pages):
             print('parsing page', page)
             print('page url:', url)
             posts, link = self.get_metadata_from(url)
             collected_meta += posts
+            if not link:
+                break
             url = urllib.parse.urljoin(self.domain, link)
 
         return collected_meta
