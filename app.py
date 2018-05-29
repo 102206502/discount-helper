@@ -32,7 +32,7 @@ def callback():
 def handle_message(event):
     
     discount_df = pd.read_csv('discount info.csv')
-    discount_info = discount_df['title', 'link']
+    discount_info = discount_df[['title','link']]
     line_bot_api.reply_message(
         event.reply_token, 
         TextSendMessage(text=str(discount_info))
