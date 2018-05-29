@@ -29,10 +29,11 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    discount_info_df = pd.read_csv('discount info.csv')
-    discount_info = discount_info_df['title', 'link']
+    discount_df = pd.read_csv('discount info.csv')
 	line_bot_api.reply_message(
-		event.reply_token,
-		TextSendMessage(text=str(discount_info)))
+        event.reply_token, TextSendMessage(text=event.message.text)
+    )
+
+
 if __name__ == "__main__":
 	app.run()
