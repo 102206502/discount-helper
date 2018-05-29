@@ -10,6 +10,7 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 import pandas as pd
+import pttcrawler
 
 app = Flask(__name__)
 
