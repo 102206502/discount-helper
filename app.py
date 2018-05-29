@@ -17,6 +17,7 @@ app = Flask(__name__)
 
 line_bot_api = LineBotApi('fSMwE33M/k8ghVDECft3OHmOMe/6hWYEfZLr8zO/NipaNlzhWG4Mp+sM9EhZZUBr5Qz9B1pDg/HA5QzeQRKPr9D4yODISelp28dzFvHdinGK7k8piNfUWYgbnUyCX5wLgchxkJ5f8mNp4G9SneyEAQdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('6fc5f6ff56b76e30f01331253b4cacd5')
+crawler = pttcrawler.PttBoardCrawleer()
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -46,5 +47,4 @@ def handle_message(event):
 
 if __name__ == "__main__":
     app.run()
-    global crawler
     crawler = pttcrawler.PttBoardCrawleer()
