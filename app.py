@@ -11,6 +11,7 @@ from linebot.models import (
 )
 import pandas as pd
 import pttcrawler
+import urllib.parse
 
 app = Flask(__name__)
 
@@ -32,12 +33,18 @@ def callback():
 def handle_message(event):
     
     discount_df = pd.read_csv('discount info.csv')
-    discount_info = discount_df[['title','link']]
-    line_bot_api.reply_message(
-        event.reply_token, 
-        TextSendMessage(text=str(discount_info))
-        # TextSendMessage(text=event.message.text)
-    )
+    discount_info = discount_df[['date','title','link']]
+    for i in range(len(discount_info)):
+        info_meta = discount_info.iloc[i,:]
+        link_str = urllib.parse.urljoin(crawler.domain, info_meta['link'])
+        message = info_meta['date']+'\n'+info_meta['title']+'\n'+link_str
+        line_bot_api.reply_message(
+            event.reply_token, 
+            TextSendMessage(text=str(message))
+            # TextSendMessage(text=event.message.text)
+        )
 
 if __name__ == "__main__":
     app.run()
+    global crawler
+    crawler = pttcrawler.PttBoardCrawleer()
