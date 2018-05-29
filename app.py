@@ -9,6 +9,7 @@ from linebot.exceptions import (
 from linebot.models import (
 	MessageEvent, TextMessage, TextSendMessage,
 )
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -28,8 +29,10 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    discount_info_df = pd.read_csv('discount info.csv')
+    discount_info = discount_info_df['title', 'link']
 	line_bot_api.reply_message(
 		event.reply_token,
-		TextSendMessage(text=event.message.text))
+		TextSendMessage(text=str(discount_info)))
 if __name__ == "__main__":
 	app.run()
