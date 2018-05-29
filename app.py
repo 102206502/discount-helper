@@ -35,15 +35,16 @@ def handle_message(event):
     
     discount_df = pd.read_csv('discount info.csv')
     discount_info = discount_df[['date','title','link']]
+    message = ''
     for i in range(len(discount_info)):
         info_meta = discount_info.iloc[i,:]
         link_str = urllib.parse.urljoin(crawler.domain, info_meta['link'])
-        message = info_meta['date']+'\n'+info_meta['title']+'\n'+link_str
-        line_bot_api.reply_message(
-            event.reply_token, 
-            TextSendMessage(text=str(message))
-            # TextSendMessage(text=event.message.text)
-        )
+        message += info_meta['date']+'\n'+info_meta['title']+'\n'+link_str+'\n'
+    line_bot_api.reply_message(
+        event.reply_token, 
+        TextSendMessage(text=str(message))
+        # TextSendMessage(text=event.message.text)
+    )
 
 if __name__ == "__main__":
     app.run()
