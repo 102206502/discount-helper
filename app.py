@@ -28,6 +28,7 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    
     discount_df = pd.read_csv('discount info.csv')
     discount_info = discount_df['title', 'link']
     line_bot_api.reply_message(
@@ -35,5 +36,6 @@ def handle_message(event):
         TextSendMessage(text=str(discount_info))
         # TextSendMessage(text=event.message.text)
     )
+
 if __name__ == "__main__":
     app.run()
