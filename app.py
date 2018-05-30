@@ -78,7 +78,6 @@ def check_crawl():
 def get_discount_infoes(discount_df):
     discount_info = discount_df[['date','title','link']]
     re_msg = ''
-    max_lines = 25
     for i in range(len(discount_info)):
         info_meta = discount_info.iloc[i,:]
         link_str = urllib.parse.urljoin(crawler.domain, info_meta['link'])
