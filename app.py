@@ -21,6 +21,7 @@ line_bot_api = LineBotApi('fSMwE33M/k8ghVDECft3OHmOMe/6hWYEfZLr8zO/NipaNlzhWG4Mp
 handler = WebhookHandler('6fc5f6ff56b76e30f01331253b4cacd5')
 crawler = pttcrawler.PttBoardCrawleer()
 last_crawl = datetime.datetime.now()
+max_lines = 10
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -44,6 +45,7 @@ def handle_message(event):
     else:
         discount_df = pd.read_csv('discount info.csv')
         re_msg = get_discount_infoes(discount_df)
+        max_lines+=1
 
     if is_crawling:
         re_msg += '新訊更新中...'
