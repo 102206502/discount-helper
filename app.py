@@ -67,7 +67,7 @@ def check_crawl():
     cur_time = datetime.datetime.now()
     if cur_time.date() != last_crawl.date():
         crawler.crawl_all_info()
-    elif cur_time.hour() - last_crawl.hour() > 4:
+    elif cur_time.hour - last_crawl.hour > 4:
         crawler.crawl_all_info()
     else:
         re_crawl = False
