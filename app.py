@@ -46,7 +46,6 @@ def handle_message(event):
         discount_df = pd.read_csv('discount info.csv')
         re_msg = get_discount_infoes(discount_df)
     else:
-        max_lines+=1
         discount_df = pd.read_csv('discount info life.csv')
         re_msg = get_discount_infoes(discount_df)
 
