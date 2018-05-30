@@ -6,6 +6,7 @@ from requests_html import HTML
 import pandas as pd
 import re
 import urllib.parse
+import threading
 
 
 
@@ -14,16 +15,17 @@ class PttBoardCrawleer(object):
     def __init__(self):
         self.domain = 'https://www.ptt.cc/'
         self.key_words = [r'折扣', r'打折', r'優惠', r'特賣', r'特價', r'降價', r'免運']
-        self.month_period = 3 # 間隔?個月
+        self.month_period = 2 # 間隔?個月
+        # self.max_post = 30
 
-    def crawl_discount_info(self, board_name):
-        
-        start_url = 'https://www.ptt.cc/bbs/' + board_name + '/index.html'
-        num_pages = 300
-
-        collected_meta = self.get_paged_meta(start_url, num_pages)
-        article_df = pd.DataFrame(collected_meta)
-        article_df.to_csv('discount info.csv')
+    def crawl_discount_info(self, boards, df_name):
+        board_collected_meta = []
+        for board_name in boards:
+            start_url = 'https://www.ptt.cc/bbs/' + board_name + '/index.html'
+            num_pages = 300
+            board_collected_meta += self.get_paged_meta(start_url, num_pages)
+        article_df = pd.DataFrame(board_collected_meta)
+        article_df.to_csv(df_name+'.csv')
         # print(article_df)
         
 
@@ -73,10 +75,17 @@ class PttBoardCrawleer(object):
             # print('today:', now_time.month)
             date_arr = date_str.split('/')
             post_month = int(date_arr[0])
+            post_day = int(date_arr[1])
             # print(date_str)
             too_old = False
-            if now_time.month >= post_month:
-                too_old = now_time.month - post_month >= self.month_period
+            if self.month_period <=1:
+                too_old = now_time.day - post_day > 31
+                if now_time.month > post_month:
+                    too_old = (now_time.day > post_day)
+                else:
+                    too_old = post_day - now_time.day > 30
+            elif now_time.month >= post_month:
+                too_old = (now_time.month - post_month >= self.month_period)
             else:
                 too_old = now_time.month + 12 - now_time.month >= self.month_period
             # print('too old?', too_old)
@@ -131,10 +140,20 @@ class PttBoardCrawleer(object):
 
         return collected_meta
 
+    def crawl_all_info(self):
+        ptt_boards = ['e-shopping', 'Lifeismoney']
+        pc_boards = ['PC_Shopping', 'nb-shopping']
+        self.month_period = 1
+        crawl_thread = threading.Thread(target=self.crawl_discount_info, args=(ptt_boards, 'discount info'))
+        crawl_thread.start()
+        crawl_thread2 = threading.Thread(target=self.crawl_discount_info, args=(pc_boards, 'discount info pc'))
+        crawl_thread2.start()
+        print('mainthread jump out....')
+
 if __name__ == "__main__":
-    ptt_boards = ['Lifeismoney', 'Actuary', 'PC_Shopping', 'nb-shopping']
+    # ptt_boards = ['e-shopping', 'Lifeismoney', 'PC_Shopping', 'nb-shopping']
     crawler = PttBoardCrawleer()
-    crawler.crawl_discount_info('e-shopping')
+    crawler.crawl_all_info()
 
 
 
