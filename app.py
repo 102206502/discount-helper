@@ -90,10 +90,13 @@ def get_discount_infoes(discount_df):
         re_msg += info_meta['date']+'\n'+info_meta['title']+'\n'+link_str+'\n'
         if i > max_lines:
             break
+    print(re_msg)
     return re_msg
 
 if __name__ == "__main__":
-    crawler.crawl_all_info()
     max_lines = 10
+    # discount_df = pd.read_csv('./discount info life.csv')
+    # re_msg = get_discount_infoes(discount_df)
+    crawler.crawl_all_info()
     app.run()
 
