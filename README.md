@@ -1,7 +1,10 @@
 # discount-helper
 
+這是一個LINE上的聊天機器人
+
+
  - 加好友: 
- 	搜尋 *discount_helper*
+ 	搜尋 LINE ID @tcq8989b
 
 ## 功能
  - 獲取PTT上的折扣新訊

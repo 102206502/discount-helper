@@ -15,6 +15,7 @@ class PttBoardCrawleer(object):
     def __init__(self):
         self.domain = 'https://www.ptt.cc/'
         self.key_words = [r'折扣', r'打折', r'優惠', r'特賣', r'特價', r'降價', r'免運']
+        self.Life_key_words = [r'']
         self.block_words = [r'特賣會']
         self.month_period = 2 # 間隔?個月
         # self.max_post = 30

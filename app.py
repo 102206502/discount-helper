@@ -45,6 +45,8 @@ def handle_message(event):
     elif query_type == 'e-shop':
         discount_df = pd.read_csv('discount info.csv')
         re_msg = get_discount_infoes(discount_df)
+    elif query_type == 'track':
+        re_msg = event.message.text
     else:
         discount_df = pd.read_csv('discount info life.csv')
         re_msg = get_discount_infoes(discount_df)
@@ -66,6 +68,8 @@ def check_message(message):
         return 'pc'
     elif re.search(life_info, message):
         return 'life'
+    elif re.search(r'http', message):
+        return 'track'
     else:
         return 'e-shop' 
 

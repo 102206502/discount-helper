@@ -16,14 +16,8 @@ import urllib.parse
 # print(message)
 last_crawl = datetime.datetime.now()
 
-def check_crawl():
-    re_crawl = True
-    cur_time = datetime.datetime.now()
-    if cur_time.date() != last_crawl.date():
-        print()
-    elif cur_time.hour() - last_crawl.hour() > 4:
-        print()
-    else:
-        re_crawl = False
-    return re_crawl
-check_crawl()
+url = 'https://forum.gamer.com.tw/C.php?bsn=09009&snA=12140'
+import re
+match = re.search(r'http', url)
+if match:
+	print('it is a link!')
