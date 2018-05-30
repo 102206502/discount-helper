@@ -15,6 +15,7 @@ class PttBoardCrawleer(object):
     def __init__(self):
         self.domain = 'https://www.ptt.cc/'
         self.key_words = [r'折扣', r'打折', r'優惠', r'特賣', r'特價', r'降價', r'免運']
+        self.block_words = [r'特賣會']
         self.month_period = 2 # 間隔?個月
         # self.max_post = 30
 
@@ -141,13 +142,16 @@ class PttBoardCrawleer(object):
         return collected_meta
 
     def crawl_all_info(self):
-        ptt_boards = ['e-shopping', 'Lifeismoney']
+        eshop_boards = ['e-shopping']
         pc_boards = ['PC_Shopping', 'nb-shopping']
+        life_boards = ['Lifeismoney']
         self.month_period = 1
-        crawl_thread = threading.Thread(target=self.crawl_discount_info, args=(ptt_boards, 'discount info'))
+        crawl_thread = threading.Thread(target=self.crawl_discount_info, args=(eshop_boards, 'discount info'))
         crawl_thread.start()
         crawl_thread2 = threading.Thread(target=self.crawl_discount_info, args=(pc_boards, 'discount info pc'))
         crawl_thread2.start()
+        crawl_thread3 = threading.Thread(target=self.crawl_discount_info, args=(life_boards, 'discount info life'))
+        crawl_thread3.start()
         print('mainthread jump out....')
 
 if __name__ == "__main__":

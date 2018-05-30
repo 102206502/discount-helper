@@ -21,7 +21,7 @@ line_bot_api = LineBotApi('fSMwE33M/k8ghVDECft3OHmOMe/6hWYEfZLr8zO/NipaNlzhWG4Mp
 handler = WebhookHandler('6fc5f6ff56b76e30f01331253b4cacd5')
 crawler = pttcrawler.PttBoardCrawleer()
 last_crawl = datetime.datetime.now()
-max_lines = 10
+global max_lines
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -42,10 +42,13 @@ def handle_message(event):
     if query_type == 'pc':
         discount_df = pd.read_csv('discount info pc.csv')
         re_msg = get_discount_infoes(discount_df)
-    else:
+    elif query_type == 'e-shop':
         discount_df = pd.read_csv('discount info.csv')
         re_msg = get_discount_infoes(discount_df)
+    else:
         max_lines+=1
+        discount_df = pd.read_csv('discount info life.csv')
+        re_msg = get_discount_infoes(discount_df)
 
     if is_crawling:
         re_msg += '新訊更新中...'
@@ -58,11 +61,14 @@ def handle_message(event):
 
 def check_message(message):
     pc_info = r'(電腦|PC|pc|Pc|筆電|桌電)'
+    life_info = r'(附近|超商)'
     match = re.search(pc_info, message)
     if match:
         return 'pc'
+    elif re.search(life_info, message):
+        return 'life'
     else:
-        return 'others' 
+        return 'e-shop' 
 
 def check_crawl():
     re_crawl = True
@@ -88,5 +94,6 @@ def get_discount_infoes(discount_df):
 
 if __name__ == "__main__":
     crawler.crawl_all_info()
+    max_lines = 10
     app.run()
 
