@@ -62,7 +62,7 @@ def handle_message(event):
 
 def check_message(message):
     pc_info = r'(電腦|PC|pc|Pc|筆電|桌電)'
-    life_info = r'(附近|超商)'
+    life_info = r'(附近|超商|省錢)'
     match = re.search(pc_info, message)
     if match:
         return 'pc'
@@ -78,10 +78,15 @@ def check_crawl():
     cur_time = datetime.datetime.now()
     if cur_time.date() != last_crawl.date():
         crawler.crawl_all_info()
-    elif cur_time.hour - last_crawl.hour > 4:
+        last_crawl = cur_time
+    elif cur_time.minute - last_crawl.minute > 4:
         crawler.crawl_all_info()
+        last_crawl = cur_time
     else:
         re_crawl = False
+    print(last_crawl.datetime())
+    print(cur_time.datetime())
+    print('重爬嗎?', re_crawl)
     return re_crawl
 
 def get_discount_infoes(discount_df):
@@ -101,6 +106,8 @@ if __name__ == "__main__":
     max_lines = 10
     # discount_df = pd.read_csv('./discount info life.csv')
     # re_msg = get_discount_infoes(discount_df)
+    cur_time = datetime.datetime.now()
     crawler.crawl_all_info()
+    last_crawl = cur_time
     app.run()
 
