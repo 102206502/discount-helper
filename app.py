@@ -21,7 +21,7 @@ line_bot_api = LineBotApi('fSMwE33M/k8ghVDECft3OHmOMe/6hWYEfZLr8zO/NipaNlzhWG4Mp
 handler = WebhookHandler('6fc5f6ff56b76e30f01331253b4cacd5')
 crawler = pttcrawler.PttBoardCrawleer()
 last_crawl = datetime.datetime.now()
-global max_lines
+# global max_lines
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -76,6 +76,7 @@ def check_message(message):
 def check_crawl():
     re_crawl = True
     cur_time = datetime.datetime.now()
+    global last_crawl
     if cur_time.date() != last_crawl.date():
         crawler.crawl_all_info()
         last_crawl = cur_time
@@ -107,7 +108,8 @@ if __name__ == "__main__":
     # discount_df = pd.read_csv('./discount info life.csv')
     # re_msg = get_discount_infoes(discount_df)
     cur_time = datetime.datetime.now()
-    # crawler.crawl_all_info()
-    # last_crawl = cur_time
+    crawler.crawl_all_info()
+    global last_crawl
+    last_crawl = cur_time
     app.run()
 
