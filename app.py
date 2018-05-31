@@ -85,8 +85,8 @@ def check_crawl():
         last_crawl = cur_time
     else:
         re_crawl = False
-    print(last_crawl.datetime())
-    print(cur_time.datetime())
+    print(last_crawl)
+    print(cur_time)
     print('重爬嗎?', re_crawl)
     return re_crawl
 

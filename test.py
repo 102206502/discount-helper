@@ -16,8 +16,4 @@ import urllib.parse
 # print(message)
 last_crawl = datetime.datetime.now()
 
-url = 'https://forum.gamer.com.tw/C.php?bsn=09009&snA=12140'
-import re
-match = re.search(r'http', url)
-if match:
-	print('it is a link!')
+print(last_crawl)
