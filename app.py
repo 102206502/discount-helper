@@ -109,7 +109,6 @@ if __name__ == "__main__":
     # re_msg = get_discount_infoes(discount_df)
     cur_time = datetime.datetime.now()
     crawler.crawl_all_info()
-    global last_crawl
     last_crawl = cur_time
     app.run()
 
