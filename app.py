@@ -107,7 +107,7 @@ if __name__ == "__main__":
     # discount_df = pd.read_csv('./discount info life.csv')
     # re_msg = get_discount_infoes(discount_df)
     cur_time = datetime.datetime.now()
-    crawler.crawl_all_info()
-    last_crawl = cur_time
+    # crawler.crawl_all_info()
+    # last_crawl = cur_time
     app.run()
 
